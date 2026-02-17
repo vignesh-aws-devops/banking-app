@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to ECR...
+      - aws --version
+      - $(aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.us-east-1.amazonaws.com)
+
+  build:
+    commands:
+      - docker build -t banking-app .
+      - docker tag banking-app:latest <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/banking-app-repo:latest
+
+  post_build:
+    commands:
+      - docker push <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/banking-app-repo:latest
+      - printf '[{"name":"banking-container","imageUri":"%s"}]' <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/banking-app-repo:latest > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
