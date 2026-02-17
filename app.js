@@ -10,6 +10,7 @@ app.get('/loan-eligibility', (req, res) => {
   res.json({ status: "Loan Eligible" });
 });
 
-app.listen(port, () => {
+
+app.listen(port, '0.0.0.0', () => {
   console.log(`Banking app running on port ${port}`);
 });
